@@ -1,16 +1,15 @@
 <?php
-namespace BGW\Api;
+namespace BGW\API;
 
 /**
- * Plugin Name: Board Games Weekly API Endpoints
- * Plugin URI: http://boardgamesweek.com
- * Description: Custom API Endpoints for the Board Game weekly
+ * Plugin Name: Board Game Weekly API Endpoints
+ * Plugin URI: http://jmichaelward.com
+ * Description: Custom API Endpoints for the Board Game Weekly website.
  * Author: J. Michael Ward
  * Author URI: https://jmichaelward.com
  */
 
-require_once plugin_dir_path( __FILE__ ) . '/src/Api.php';
+require_once plugin_dir_path( __FILE__ ) . '/src/API.php';
 
-$plugin = new Api();
+$plugin = new API();
 $plugin->run();
-

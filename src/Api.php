@@ -1,65 +1,36 @@
 <?php
-namespace BGW\Api;
+namespace BGW\API;
+
+use BGW\API\Endpoints\Events;
+use BGW\API\Endpoints\Games;
 
 /**
- * Class Api
+ * Class API
+ *
  * @package BGW\API
  */
-class Api {
-    /**
-     *
-     */
-    public function run() {
-        $this->hooks();
-    }
+class API {
+	/**
+	 * Initialize the API class.
+	 */
+	public function run() {
+		$this->load_dependencies();
+		$this->hooks();
+	}
 
-    /**
-     *
-     */
-    public function hooks() {
-        add_action( 'rest_api_init', [ $this, 'register_games_route' ] );
-    }
+	/**
+	 * Load class files.
+	 */
+	private function load_dependencies() {
+		require_once dirname( __FILE__ ) . '/Endpoints/Events.php';
+		require_once dirname( __FILE__ ) . '/Endpoints/Games.php';
+	}
 
-    /**
-     *
-     */
-    public function register_games_route() {
-        register_rest_route( 'bgw/v1', '/games/', [
-            'methods' => 'GET',
-            'callback' => [ $this, 'get_games' ],
-            'args' => [
-                'id' => [
-                    'validate_callback' => function( $param, $request, $key ) {
-                        return is_numeric( $param );
-                    }
-                ]
-            ],
-        ] );
-    }
-
-    /**
-     * @return array|\WP_Error
-     */
-    public function get_games() {
-        $posts = get_posts( [
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-            'post_type'      => 'bgw_game',
-            'posts_per_page' => - 1,
-        ]);
-
-        if ( empty( $posts ) ) {
-            return new \WP_Error( 'no_games_found', 'No Games!', [ 'status' => 404 ] );
-        }
-
-        $titles = [];
-
-        foreach ( $posts as $post ) {
-            $titles[] = $post->post_title;
-        }
-
-        return $titles;
-    }
+	/**
+	 * Register WordPress hooks.
+	 */
+	public function hooks() {
+		add_action( 'rest_api_init', [ new Games, 'register_routes' ] );
+		add_action( 'rest_api_init', [ new Events, 'register_routes' ] );
+	}
 }
-
-
